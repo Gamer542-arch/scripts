@@ -1,0 +1,8 @@
+local PLACE_WANTED = 14438406081 -- ← TU WPISZ PlaceId gry Wanted
+local WANTED_SCRIPT = "https://raw.githubusercontent.com/user/repo/main/wanted.lua"
+
+if game.PlaceId == PLACE_WANTED then
+    loadstring(game:HttpGet(WANTED_SCRIPT))()
+else
+    warn("Ta gra nie jest obsługiwana (tylko Wanted).")
+end

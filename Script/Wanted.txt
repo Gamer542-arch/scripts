@@ -1,0 +1,274 @@
+-- TELEPORT GUI v1.0 - TABS AT THE TOP: ATMS / OTHER LOCATIONS
+-- Click tab to switch category
+-- Clean modern style, no overlap
+-- English version
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local CoreGui = game:GetService("CoreGui")
+
+if CoreGui:FindFirstChild("TeleportGUI") then
+    CoreGui.TeleportGUI:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "TeleportGUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 380, 0, 800)
+MainFrame.Position = UDim2.new(0, 10, 0, 50)
+MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(60, 60, 70)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+Title.BorderSizePixel = 0
+Title.Text = "ATM & LOCATIONS TELEPORT"
+Title.TextColor3 = Color3.fromRGB(220, 220, 255)
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBold
+Title.Parent = MainFrame
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 40, 0, 40)
+CloseBtn.Position = UDim2.new(1, -45, 0, 5)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
+CloseBtn.BorderSizePixel = 0
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.new(1,1,1)
+CloseBtn.TextScaled = true
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Parent = MainFrame
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Tabs
+local TabFrame = Instance.new("Frame")
+TabFrame.Size = UDim2.new(1, 0, 0, 40)
+TabFrame.Position = UDim2.new(0, 0, 0, 50)
+TabFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+TabFrame.BorderSizePixel = 0
+TabFrame.Parent = MainFrame
+
+local ATMsTab = Instance.new("TextButton")
+ATMsTab.Size = UDim2.new(0.5, 0, 1, 0)
+ATMsTab.Position = UDim2.new(0, 0, 0, 0)
+ATMsTab.BackgroundColor3 = Color3.fromRGB(70, 70, 100)
+ATMsTab.BorderSizePixel = 0
+ATMsTab.Text = "ATMS"
+ATMsTab.TextColor3 = Color3.new(1,1,1)
+ATMsTab.TextScaled = true
+ATMsTab.Font = Enum.Font.GothamBold
+ATMsTab.Parent = TabFrame
+
+local OtherTab = Instance.new("TextButton")
+OtherTab.Size = UDim2.new(0.5, 0, 1, 0)
+OtherTab.Position = UDim2.new(0.5, 0, 0, 0)
+OtherTab.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+OtherTab.BorderSizePixel = 0
+OtherTab.Text = "OTHER"
+OtherTab.TextColor3 = Color3.new(1,1,1)
+OtherTab.TextScaled = true
+OtherTab.Font = Enum.Font.GothamBold
+OtherTab.Parent = TabFrame
+
+-- Content frame
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Size = UDim2.new(1, -20, 1, -180)
+ContentFrame.Position = UDim2.new(0, 10, 0, 95)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Parent = MainFrame
+
+-- Bottom buttons
+local NoclipBtn = Instance.new("TextButton")
+NoclipBtn.Size = UDim2.new(0, 110, 0, 40)
+NoclipBtn.Position = UDim2.new(0, 10, 1, -50)
+NoclipBtn.BackgroundColor3 = Color3.fromRGB(50, 100, 200)
+NoclipBtn.BorderSizePixel = 1
+NoclipBtn.BorderColor3 = Color3.fromRGB(80, 80, 80)
+NoclipBtn.Text = "Noclip OFF"
+NoclipBtn.TextColor3 = Color3.new(1,1,1)
+NoclipBtn.TextScaled = true
+NoclipBtn.Font = Enum.Font.Gotham
+NoclipBtn.Parent = MainFrame
+
+local RespawnBtn = Instance.new("TextButton")
+RespawnBtn.Size = UDim2.new(0, 110, 0, 40)
+RespawnBtn.Position = UDim2.new(0.5, -55, 1, -50)
+RespawnBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+RespawnBtn.BorderSizePixel = 1
+RespawnBtn.BorderColor3 = Color3.fromRGB(80, 80, 80)
+RespawnBtn.Text = "Respawn"
+RespawnBtn.TextColor3 = Color3.new(1,1,1)
+RespawnBtn.TextScaled = true
+RespawnBtn.Font = Enum.Font.Gotham
+RespawnBtn.Parent = MainFrame
+
+local FarmAllBtn = Instance.new("TextButton")
+FarmAllBtn.Size = UDim2.new(0, 110, 0, 40)
+FarmAllBtn.Position = UDim2.new(1, -120, 1, -50)
+FarmAllBtn.BackgroundColor3 = Color3.fromRGB(200, 140, 0)
+FarmAllBtn.BorderSizePixel = 1
+FarmAllBtn.BorderColor3 = Color3.fromRGB(80, 80, 80)
+FarmAllBtn.Text = "Farm All ATMs"
+FarmAllBtn.TextColor3 = Color3.new(1,1,1)
+FarmAllBtn.TextScaled = true
+FarmAllBtn.Font = Enum.Font.Gotham
+FarmAllBtn.Parent = MainFrame
+
+-- ATM positions
+local atmPositions = {
+    Vector3.new(206, 40, -2847),
+    Vector3.new(296, 40, -2933),
+    Vector3.new(169, 40, -2832),
+    Vector3.new(191, 40, -2899),
+    Vector3.new(211, 40, -2918),
+    Vector3.new(215, 40, -2903),
+    Vector3.new(232, 40, -2899),
+    Vector3.new(-758, 42, -2683),
+    Vector3.new(-656, 42, -2745),
+    Vector3.new(-677, 42, -2680),
+    Vector3.new(-683, 40, -2958),
+    Vector3.new(-447, 40, -1986),
+    Vector3.new(-438, 40, -1967),
+    Vector3.new(-381, 40, -1679),
+    Vector3.new(-448, 56, -1593),
+    Vector3.new(-455, 56, -1631),
+    Vector3.new(-448, 73, -1596),
+    Vector3.new(-458, 73, -1624)
+}
+
+-- Other locations
+local otherLocations = {
+    {name = "Sell", pos = Vector3.new(-2910, 37, 1652)},
+    {name = "Bank", pos = Vector3.new(-390, 615, -1212)},
+    {name = "Weapon Shop", pos = Vector3.new(-169, 43, -2824)}
+}
+
+local function doTeleport(pos, offset)
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    if offset then
+        hrp.CFrame = CFrame.new(pos + Vector3.new(5, 5, -3), pos)
+    else
+        hrp.CFrame = CFrame.new(pos)
+    end
+end
+
+-- Containers for buttons
+local ATMsContainer = Instance.new("Frame")
+ATMsContainer.Size = UDim2.new(1, 0, 1, 0)
+ATMsContainer.BackgroundTransparency = 1
+ATMsContainer.Visible = true
+ATMsContainer.Parent = ContentFrame
+
+local OtherContainer = Instance.new("Frame")
+OtherContainer.Size = UDim2.new(1, 0, 1, 0)
+OtherContainer.BackgroundTransparency = 1
+OtherContainer.Visible = false
+OtherContainer.Parent = ContentFrame
+
+-- Create ATM buttons
+local yPosATM = 0
+for i, pos in ipairs(atmPositions) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 35)
+    btn.Position = UDim2.new(0, 0, 0, yPosATM)
+    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.fromRGB(80, 80, 80)
+    btn.Text = "#" .. i .. " ATM (" .. pos.X .. ", " .. pos.Y .. ", " .. pos.Z .. ")"
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.TextScaled = true
+    btn.Font = Enum.Font.Gotham
+    btn.Parent = ATMsContainer
+    
+    btn.MouseButton1Click:Connect(function()
+        doTeleport(pos, true)
+    end)
+    
+    yPosATM = yPosATM + 40
+end
+
+-- Create Other buttons
+local yPosOther = 0
+for _, tp in ipairs(otherLocations) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 60)
+    btn.Position = UDim2.new(0, 0, 0, yPosOther)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 100, 180)
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.fromRGB(80, 80, 80)
+    btn.Text = "Teleport: " .. tp.name
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.TextScaled = true
+    btn.Font = Enum.Font.GothamBold
+    btn.Parent = OtherContainer
+    
+    btn.MouseButton1Click:Connect(function()
+        doTeleport(tp.pos, false)
+    end)
+    
+    yPosOther = yPosOther + 70
+end
+
+-- Tab switching
+ATMsTab.MouseButton1Click:Connect(function()
+    ATMsContainer.Visible = true
+    OtherContainer.Visible = false
+    ATMsTab.BackgroundColor3 = Color3.fromRGB(70, 70, 100)
+    OtherTab.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+end)
+
+OtherTab.MouseButton1Click:Connect(function()
+    ATMsContainer.Visible = false
+    OtherContainer.Visible = true
+    ATMsTab.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+    OtherTab.BackgroundColor3 = Color3.fromRGB(70, 70, 100)
+end)
+
+-- Noclip
+local noclipOn = false
+NoclipBtn.MouseButton1Click:Connect(function()
+    noclipOn = not noclipOn
+    NoclipBtn.Text = noclipOn and "Noclip ON" or "Noclip OFF"
+    NoclipBtn.BackgroundColor3 = noclipOn and Color3.fromRGB(0,150,0) or Color3.fromRGB(50, 100, 200)
+end)
+
+game:GetService("RunService").Stepped:Connect(function()
+    if noclipOn and player.Character then
+        for _, part in pairs(player.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- Respawn
+RespawnBtn.MouseButton1Click:Connect(function()
+    player:LoadCharacter()
+end)
+
+-- Farm All ATMs
+FarmAllBtn.MouseButton1Click:Connect(function()
+    spawn(function()
+        FarmAllBtn.Text = "Farming..."
+        for i, pos in ipairs(atmPositions) do
+            doTeleport(pos, true)
+            task.wait(4)
+        end
+        FarmAllBtn.Text = "Farm All ATMs"
+    end)
+end)
+
+print("Teleport GUI v1.0 loaded - tabs ATMS / OTHER at the top")
