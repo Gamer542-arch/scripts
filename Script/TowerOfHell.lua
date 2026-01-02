@@ -87,4 +87,4 @@ end
 -- ======================
 -- PRZYKŁADOWE UŻYCIE
 -- ======================
-TeleportGui:ButtonCreate("END", Vector3.new(-9, 500, 45))
+TeleportGui:ButtonCreate("END  (Not working all maps this script is optionaly)", Vector3.new(-9, 500, 45))
