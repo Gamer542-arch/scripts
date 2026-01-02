@@ -1,8 +1,29 @@
+<<<<<<< HEAD
 local PLACE_WANTED = 14438406081 -- ← TU WPISZ PlaceId gry Wanted
 local WANTED_SCRIPT = "https://raw.githubusercontent.com/Gamer542-arch/scripts/refs/heads/main/Script/Wanted.txt"
+=======
+-- === CONFIG ===
+local WANTED_PLACE_ID = 14438406081 -- ← TU WPISZ PlaceId gry Wanted
+local WANTED_SCRIPT = "https://raw.githubusercontent.com/Gamer542-arch/scripts/refs/heads/main/Script/Wanted.txt"
+-- ==============
+>>>>>>> ebc38ea8e8cf4e542840c2e2accdd2a0a4155f7e
 
-if game.PlaceId == PLACE_WANTED then
-    loadstring(game:HttpGet(WANTED_SCRIPT))()
+-- zabezpieczenie
+local HttpGet = game.HttpGet or function(self, url)
+    return game:HttpGet(url)
+end
+local gaamer = game.PlaceID
+-- main
+if game.PlaceId == WANTED_PLACE_ID then
+    local success, err = pcall(function()
+        loadstring(HttpGet:(WANTED_SCRIPT))()
+    end)
+
+    if not success then
+        warn("Błąd ładowania skryptu Wanted:", err)
+    end
 else
     warn("Ta gra nie jest obsługiwana (tylko Wanted).")
 end
+
+print(gaamer)
