@@ -1,0 +1,151 @@
+
+loadstring(game:HttpGet('https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/latest.lua'))()
+local DelayTime = 0.5
+local player = game.Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local START_POS = Vector3.new(-1931, 2545, -1430)
+local END_POS = Vector3.new(-1931, -60, -1427)
+
+local selectedFish = nil
+local farming = false
+
+-- === GUI ===
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Parent = screenGui
+frame.Size = UDim2.new(0, 320, 0, 450)
+frame.Position = UDim2.new(0.5, -160, 0.5, -225)
+frame.BackgroundColor3 = Color3.fromRGB(25,25,25)
+frame.Active = true
+frame.Draggable = true
+
+local title = Instance.new("TextLabel")
+title.Parent = frame
+title.Size = UDim2.new(1,0,0,40)
+title.BackgroundTransparency = 1
+title.Text = "AUTO FISH FARM"
+title.TextColor3 = Color3.new(1,1,1)
+title.TextScaled = true
+title.Font = Enum.Font.SourceSansBold
+
+local scrolling = Instance.new("ScrollingFrame")
+scrolling.Parent = frame
+scrolling.Position = UDim2.new(0,10,0,50)
+scrolling.Size = UDim2.new(1,-20,0,300)
+scrolling.CanvasSize = UDim2.new(0,0,0,0)
+scrolling.ScrollBarThickness = 6
+scrolling.BackgroundColor3 = Color3.fromRGB(35,35,35)
+
+local layout = Instance.new("UIListLayout")
+layout.Parent = scrolling
+layout.Padding = UDim.new(0,5)
+
+local startButton = Instance.new("TextButton")
+startButton.Parent = frame
+startButton.Position = UDim2.new(0,10,1,-90)
+startButton.Size = UDim2.new(1,-20,0,35)
+startButton.Text = "START"
+startButton.BackgroundColor3 = Color3.fromRGB(0,170,0)
+startButton.TextColor3 = Color3.new(1,1,1)
+startButton.TextScaled = true
+startButton.Font = Enum.Font.SourceSansBold
+
+local stopButton = Instance.new("TextButton")
+stopButton.Parent = frame
+stopButton.Position = UDim2.new(0,10,1,-45)
+stopButton.Size = UDim2.new(1,-20,0,35)
+stopButton.Text = "STOP"
+stopButton.BackgroundColor3 = Color3.fromRGB(170,0,0)
+stopButton.TextColor3 = Color3.new(1,1,1)
+stopButton.TextScaled = true
+stopButton.Font = Enum.Font.SourceSansBold
+
+-- === GENEROWANIE LISTY ===
+local fishFolder = ReplicatedStorage:WaitForChild("Assets"):WaitForChild("FishModels")
+
+for _, fish in ipairs(fishFolder:GetChildren()) do
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1,-10,0,30)
+	btn.Text = fish.Name
+	btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.TextScaled = true
+	btn.Font = Enum.Font.SourceSans
+	btn.Parent = scrolling
+	
+	btn.MouseButton1Click:Connect(function()
+		selectedFish = fish.Name
+		for _, child in ipairs(scrolling:GetChildren()) do
+			if child:IsA("TextButton") then
+				child.BackgroundColor3 = Color3.fromRGB(60,60,60)
+			end
+		end
+		btn.BackgroundColor3 = Color3.fromRGB(0,120,255)
+	end)
+end
+
+task.wait()
+scrolling.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y)
+
+-- === FUNKCJE ===
+local function teleport(pos)
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hrp = char:WaitForChild("HumanoidRootPart")
+	hrp.CFrame = CFrame.new(pos)
+end
+
+local function teleportToFish()
+	local fishesFolder = workspace:WaitForChild("Game"):WaitForChild("Fishes")
+
+	for _, fish in ipairs(fishesFolder:GetChildren()) do
+		if fish.Name == selectedFish then
+			
+			local part = fish.PrimaryPart or fish:FindFirstChildWhichIsA("BasePart", true)
+			if not part then continue end
+			
+			-- teleport do ryby
+			local char = player.Character or player.CharacterAdded:Wait()
+			local hrp = char:WaitForChild("HumanoidRootPart")
+			hrp.CFrame = part.CFrame + Vector3.new(0,0,3)
+
+			task.wait(DelayTime)
+
+			-- szukanie ProximityPrompt
+			local prompt = fish:FindFirstChildWhichIsA("ProximityPrompt", true)
+			if prompt then
+				fireproximityprompt(prompt)
+				task.wait(DelayTime)
+			end
+
+			-- jeśli dalej istnieje (czyli nie złapana)
+			if fish and fish.Parent then
+				-- usuń lokalnie
+				fish:Destroy()
+			end
+
+			return
+		end
+	end
+end
+
+-- === START FARM ===
+startButton.MouseButton1Click:Connect(function()
+	if not selectedFish then return end
+	if farming then return end
+	
+	farming = true
+	
+	while farming do
+		
+		teleportToFish()
+		task.wait(0.2)	
+	end
+end)
+
+-- === STOP ===
+stopButton.MouseButton1Click:Connect(function()
+	farming = false
+end)
