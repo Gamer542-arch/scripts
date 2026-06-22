@@ -1,48 +1,67 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local rootPart = character:WaitForChild("HumanoidRootPart")
+local playerGui = player:WaitForChild("PlayerGui")
 
--- Konfiguracja
-local PROMPT_NAME = "Harvest" -- Zmień, jeśli prompt nazywa się inaczej
-local MAX_COLLECT = 104
-local DELAY_TIME = 0.1 -- Czas między zebraniami, aby uniknąć błędów
+-- Tworzenie GUI
+local screenGui = Instance.new("ScreenGui", playerGui)
+screenGui.Name = "AutoFarmGUI"
+screenGui.ResetOnSpawn = false
 
-local function getHarvestPrompts()
-    local prompts = {}
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0, 200, 0, 150)
+frame.Position = UDim2.new(0.5, -100, 0.5, -75)
+frame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+frame.Draggable = true
+frame.Active = true
+
+local statusLabel = Instance.new("TextLabel", frame)
+statusLabel.Size = UDim2.new(1, 0, 0, 30)
+statusLabel.Text = "Status: Idle"
+statusLabel.TextColor3 = Color3.new(1, 1, 1)
+statusLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+
+local startButton = Instance.new("TextButton", frame)
+startButton.Size = UDim2.new(0.8, 0, 0.4, 0)
+startButton.Position = UDim2.new(0.1, 0, 0.4, 0)
+startButton.Text = "Start Auto Loop"
+startButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+
+local running = false
+
+local function firePrompt(actionName)
+    local found = false
     for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("ProximityPrompt") and obj.ActionText:find(PROMPT_NAME) then
-            table.insert(prompts, obj)
+        if obj:IsA("ProximityPrompt") and obj.ActionText == actionName then
+            local parent = obj.Parent
+            local pos = (parent:IsA("BasePart") and parent.Position) or (parent:IsA("Model") and parent:GetPrimaryPartCFrame().Position)
+            
+            if pos and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(0, 2, 0))
+                task.wait(0.3)
+                fireproximityprompt(obj)
+                found = true
+                break -- Przejdź do następnego kroku po znalezieniu i kliknięciu
+            end
         end
     end
-    return prompts
+    return found
 end
 
-local collectedCount = 0
-
-task.wait(2) -- Czas na załadowanie świata
-
-local prompts = getHarvestPrompts()
-
-for _, prompt in pairs(prompts) do
-    if collectedCount >= MAX_COLLECT then break end
-    
-    local parent = prompt.Parent
-    -- Zakładamy, że prompt jest wewnątrz części (BasePart) lub modelu z PrimaryPart
-    local targetPosition = (parent:IsA("BasePart") and parent.Position) or (parent:IsA("Model") and parent:GetPrimaryPartCFrame().Position)
-    
-    if targetPosition then
-        -- Teleportacja
-        rootPart.CFrame = CFrame.new(targetPosition + Vector3.new(0, 2, 0))
-        task.wait(0.2)
-        
-        -- Aktywacja prompta
-        fireproximityprompt(prompt)
-        collectedCount += 1
-        
-        print("Zebrano: " .. collectedCount)
-        task.wait(DELAY_TIME)
+startButton.MouseButton1Click:Connect(function()
+    running = not running
+    if running then
+        startButton.Text = "Stop"
+        while running do
+            statusLabel.Text = "Status: Harvesting..."
+            firePrompt("Harvest")
+            task.wait(1)
+            
+            statusLabel.Text = "Status: Selling..."
+            firePrompt("Sell inventory")
+            task.wait(1)
+        end
+    else
+        startButton.Text = "Start Auto Loop"
+        statusLabel.Text = "Status: Idle"
     end
-end
-
-warn("Zakończono zbieranie lub osiągnięto limit 104 sztuk.")
+end)
