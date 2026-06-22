@@ -6,7 +6,7 @@ local rootPart = character:WaitForChild("HumanoidRootPart")
 -- Konfiguracja
 local PROMPT_NAME = "Harvest" -- Zmień, jeśli prompt nazywa się inaczej
 local MAX_COLLECT = 104
-local DELAY_TIME = 0.5 -- Czas między zebraniami, aby uniknąć błędów
+local DELAY_TIME = 0.1 -- Czas między zebraniami, aby uniknąć błędów
 
 local function getHarvestPrompts()
     local prompts = {}
